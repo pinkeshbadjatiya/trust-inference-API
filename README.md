@@ -2,7 +2,7 @@
 An opensource API exposing multiple algorithms for infering trust in a network
 
 ## Instructions
-For each of these algorithms, the input data format should be a file, with each line representing an edge from A -> B, i.e. "A B". If the graph is weighted then the line should be of the format "A B W" where W represents the weight of the trust, which should be normalised, i.e. between 0 and 1.
+<hr>
 
 ### sTrust
 - **USAGE**: `python api.py sTrust`
@@ -12,9 +12,10 @@ For each of these algorithms, the input data format should be a file, with each 
   - **rating_with_timestamp.mat**: It contains a dictionary with key as "rating_with_timestamp" while the value represents a 2-d array with each row of the format `[1, 2, 3, 4, 5, 6]` representing, user 1 gives a rating of 4 to the product 2 from the category 3. The helpfulness of this rating is 5 in the time stamp 6. 
   - The dataset used is Epinions dataset which was released in the month of May, 2011. [1]
 
+
 ### hTrust
 
 
 ## References
-(Add all the links to the papers)
+(Add all the links to the papers)  
 [1] http://www.jiliang.xyz/trust.html
