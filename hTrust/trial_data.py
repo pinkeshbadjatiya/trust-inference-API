@@ -5,7 +5,6 @@ import math
 from collections import OrderedDict
 import pdb
 
-
 # Data Requirements:
 # Remove self loops
 # Arrange user pairs in chronological order

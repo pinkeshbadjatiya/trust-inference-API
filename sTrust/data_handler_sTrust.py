@@ -172,5 +172,6 @@ class data_handler():
 
         return [P, G_needed, self.d, time_data_final]
 
-data = data_handler("rating_with_timestamp.mat", "trust.mat", "epinion_trust_with_timestamp.mat")
-data.load_matrices()
+if __name__ == "__main__":
+    data = data_handler("rating_with_timestamp.mat", "trust.mat", "epinion_trust_with_timestamp.mat")
+    data.load_matrices()

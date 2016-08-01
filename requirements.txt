@@ -1,0 +1,8 @@
+cvxopt
+networkx
+numpy
+pip
+pymf
+scipy
+sklearn
+Theano

@@ -3,22 +3,18 @@ import numpy as np
 import math
 from collections import OrderedDict
 import os
+import sys
 
 
-data = data_handler("data/rating_with_timestamp.mat", "data/trust.mat", "data/epinion_trust_with_timestamp.mat")
-data = data.load_matrices()
-K = data[2]
 
-P = data[0] 
-print "set p" + str(len(P))
-G = data[1]
-print "set G" + str(len(G))
-G_original = data[3]
-_lambda = 10
-print "LOADED MATRICES"
+CURRENT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./")
+_rating_path = os.path.abspath(CURRENT_DIR + "data/rating_with_timestamp.mat")
+_trust_path = os.path.abspath(CURRENT_DIR + "data/trust.mat")
+_trust_with_timestamp_path = os.path.abspath(CURRENT_DIR + "data/epinion_trust_with_timestamp.mat")
 
 
-def calcS(P): 
+
+def calcS(P):
     #calculating matrix S or homophily coefficient matrix using formula in paper
 
     # Z = np.load(fname + '.npy')
@@ -42,10 +38,9 @@ def calcS(P):
         Z = np.nan_to_num(Z)
 
     print "made Z"
-    
+
     return Z
 
-S = calcS(P)
 
 def hTrust(G, S, _lambda, K, maxIter, P, G_original):
     beta = 0.01
@@ -55,9 +50,9 @@ def hTrust(G, S, _lambda, K, maxIter, P, G_original):
     # construct L using formula in paper
     # Summing up elements of each row
     d = [np.sum(x) for x in S]
-    D = np.diag(d).astype(np.float32) # D = Diagonal matrix   
+    D = np.diag(d).astype(np.float32) # D = Diagonal matrix
     L = np.subtract(D,S).astype(np.float32) # L = Laplacian matrix
-    
+
 
     [n, n] = G.shape
 
@@ -109,9 +104,9 @@ def hTrust(G, S, _lambda, K, maxIter, P, G_original):
     return GC
 
 def TP_accuracy(G_original, G, GC):
-    
+
     G_final = GC
-        
+
 
     q = 0.5
     # r,c = np.where(G > 0)
@@ -125,7 +120,7 @@ def TP_accuracy(G_original, G, GC):
     print n_N
     N = G_original[n_N:] #getting N as np array
     N = [tuple(x) for x in N] #turning N to a list of tuples
-    
+
     print "N: ", len(N)
     # print N
 
@@ -139,7 +134,7 @@ def TP_accuracy(G_original, G, GC):
     A = set([tuple(x) for x in A]) #turning A into a set
     all_pairs = [(a,b) for ((a,b),z) in np.ndenumerate(G)]
     all_pairs = set(all_pairs)
-    B = list(all_pairs-A) 
+    B = list(all_pairs-A)
     print "B PAIRS", len(B)
 
     print type(B), type(N)
@@ -148,32 +143,51 @@ def TP_accuracy(G_original, G, GC):
     T1 = []
 
     print "Union: ", len(BUN)
-    
+
     for u, v in BUN:
         ptrust = G_final[u-1,v-1]
         T1.append((ptrust, u, v))
-       
+
     T1.sort()
     T1.reverse()
-   
+
     cnt1 = 0
-    
+
     for i in xrange(n_N):
         if (T1[i][1],T1[i][2]) in N:
             cnt1 += 1
-       
+
     print "CNT: ", cnt1
     print n_N
     PA1 = float(cnt1) / len(N)
     print PA1
-   
+
     del BUN
     del N
     del B
     del T1
-    
+
     print "X = ", q, "Prediction Accuracy (Betweenness nx)= ", PA1
     return PA1
 
 
-print hTrust(G,S,_lambda, K, 50, P, G_original)
+def init_main():
+    data = data_handler(_rating_path, _trust_path, _trust_with_timestamp_path)
+    data = data.load_matrices()
+    K = data[2]
+
+    P = data[0]
+    print "set p" + str(len(P))
+    G = data[1]
+    print "set G" + str(len(G))
+    G_original = data[3]
+    _lambda = 10
+    print "LOADED MATRICES"
+
+    S = calcS(P)
+    print hTrust(G,S,_lambda, K, 50, P, G_original)
+
+
+
+if __name__ == "__main__":
+    init_main()

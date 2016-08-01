@@ -4,8 +4,13 @@ from data_handler_sTrust import data_handler
 import operator
 from operator import itemgetter
 from collections import OrderedDict
+import os
 
 
+CURRENT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./")
+_rating_path = os.path.abspath(CURRENT_DIR + "data/rating_with_timestamp.mat")
+_trust_path = os.path.abspath(CURRENT_DIR + "data/trust.mat")
+_trust_with_timestamp_path = os.path.abspath(CURRENT_DIR + "data/epinion_trust_with_timestamp.mat")
 
 
 class Social_Status:
@@ -20,7 +25,7 @@ class Social_Status:
         # self.lambda1 = 0.1
         self.lambda2 = 0.7
         self.P = P #user-rating matrix (ixk)
-        self.R = np.zeros((self.n,self.n),dtype = np.float32) 
+        self.R = np.zeros((self.n,self.n),dtype = np.float32)
         self._oldU = np.zeros((self.n, self.d),dtype = np.float32)
         self.U= np.zeros((self.n, self.d),dtype = np.float32)
         self._oldH = np.zeros((self.d, self.d),dtype = np.float32)
@@ -30,14 +35,14 @@ class Social_Status:
         self.Q = np.zeros((self.n,self.n),dtype = np.float32)
         self.TP = 0
 
-    
+
     def pagerank(self,graph, damping=0.85, epsilon=1.0e-8):
         #ranks users in graph based on pagerank formulation
 
         inlink_map = {}
         outlink_counts = {}
-        
-        
+
+
         def new_node(node):
             if node not in inlink_map: inlink_map[node] = set()
             if node not in outlink_counts: outlink_counts[node] = 0
@@ -46,7 +51,7 @@ class Social_Status:
             new_node(tail_node)
             new_node(head_node)
             if tail_node == head_node: continue
-            
+
             if tail_node not in inlink_map[head_node]:
                 inlink_map[head_node].add(tail_node)
                 outlink_counts[tail_node] += 1
@@ -71,12 +76,12 @@ class Social_Status:
             delta = sum(abs(new_ranks[node] - ranks[node]) for node in new_ranks.keys())
             ranks, new_ranks = new_ranks, ranks
             n_iterations += 1
-    
+
         print "FOUND PAGERANK RANKING"
         return ranks, n_iterations
-    
 
-    def determine_user_ranking(self): 
+
+    def determine_user_ranking(self):
         #creates user graph and uses pagerank to rank users
         user_directed_graph = {}
         for pair in self.G_original:
@@ -86,7 +91,7 @@ class Social_Status:
             else:
                 user_directed_graph[user1].append(user2)
 
-        
+
         graph = self.G_original.tolist()
         damping = 0.85
         epsilon = 1.0e-8
@@ -97,7 +102,7 @@ class Social_Status:
         #rank has format: rank[user] = ranking
         for user in rank_dict:
             user = int(user)
-            rank[user] = rank_dict[user] 
+            rank[user] = rank_dict[user]
 
         rank = rank[1:]
 
@@ -107,11 +112,11 @@ class Social_Status:
 
 
     def calcR(self, test_1, final):
-          
+
         # checks if trust(i,j) > trust(j,i)
-        test_2 = self.G_itr - self.G_itr.T 
-        test_2 = test_2 > 0 
-        
+        test_2 = self.G_itr - self.G_itr.T
+        test_2 = test_2 > 0
+
         test = test_1 & test_2
 
         #setting where condition is False to 0, all others have final values
@@ -141,7 +146,7 @@ class Social_Status:
 
         self._oldU = self.U[:]
         self._oldH = self.H[:]
-        
+
         print "E1 Difference: " + str(E1-EPS) + "E2 Difference: " + str(E2-EPS)
 
         #print("\rIteration: %d FinalError: (%f, %f) EPS:%f" %(iterNO, E1, E2, EPS))
@@ -158,39 +163,39 @@ class Social_Status:
         A_4 = np.dot(np.dot(self.G,self.U),self.H.transpose())
         A_5 = np.dot(np.dot(self.lambda2 * self.R * self.R * term_2,self.U),self.H)
         A_6 = np.dot(np.dot(self.lambda2 * self.R.transpose() * self.R.transpose() * term_1,self.U),self.H.transpose())
-        
-        A = A_1 + A_2 + A_3 + A_4 + A_5 + A_6 
-    
+
+        A = A_1 + A_2 + A_3 + A_4 + A_5 + A_6
+
 
         B_1 = np.dot(np.dot(term_2,self.U),self.H)
         B_2 = np.dot(np.dot(term_1,self.U),self.H.transpose())
         B_3 = self.alpha * self.U
         B_4 = np.dot(np.dot(2 * self.lambda2 * self.R.transpose() * self.R.transpose() * term_1, self.U),self.H)
         B_5 = np.dot(np.dot(2 * self.lambda2 * self.R * self.R * term_2, self.U),self.H.transpose())
-        
-        B = B_1 + B_2 + B_3 + B_4 + B_5 
-        
+
+        B = B_1 + B_2 + B_3 + B_4 + B_5
+
 
         C_1 = np.dot(np.dot(self.U.transpose(),self.G),self.U)
         C_2 = np.dot(np.dot(self.lambda2 * self.U.transpose(), (self.R * self.R * term_1)), self.U)
         C_3 = np.dot(np.dot(self.lambda2 * self.U.transpose(), (self.R.transpose() * self.R.transpose() * term_1)), self.U)
         C = C_1 + C_2 + C_3
-       
+
 
         D_1 = np.dot(np.dot(self.U.transpose(),term_1),self.U)
         D_2 = self.alpha * self.H
         D_3 = np.dot(np.dot(2 * self.lambda2 * self.U.transpose(), (self.R * self.R * term_2)),self.U)
-       
-        D = D_1 + D_2 + D_3 
-        
 
-        
+        D = D_1 + D_2 + D_3
+
+
+
         #updating self.U and self.H
 
         test_B = B != 0
         self.U = self.U * np.sqrt(A / B)
         indices_1 = zip(*np.where(test_B==False))
-        
+
         # whenever divide by zero occurs, use old matrix value
         for x,y in indices_1:
             self.U[x,y] = self._oldU[x,y]
@@ -204,7 +209,7 @@ class Social_Status:
         for x,y in indices_2:
             self.H[x,y] = self._oldH[x,y]
 
-        
+
         #desperate attempt to reduce mem usage
 
         A = None
@@ -234,10 +239,10 @@ class Social_Status:
         test_B = None
         test_G = None
 
-    
+
     def start_main(self):
         max_itr = 40
-        
+
         ranking = self.determine_user_ranking()
         ranking = ranking.reshape(self.n,1)
 
@@ -246,12 +251,12 @@ class Social_Status:
         #checks if rank(j) > rank(i)
         test_1 = (ranking.T - ranking) * -1
         test_1 = test_1 > 0
-       
+
 
         print "DEVELOPED TEST_1"
         #calculates all the values
         final = (1/(1+(np.log(ranking-ranking.T +1))))
-        
+
 
         print "FINAL VALUES"
 
@@ -284,12 +289,12 @@ class Social_Status:
             print ("Iteration: ", i)
 
             self.calcR(test_1, final)
-           
+
             self.updateMatrices()
             self.G_itr = np.dot(np.dot(self.U,self.H),self.U.transpose())
 
             i = i + 1
-        
+
         print "Found U and H successfully!"
         print "THEY ARE"
         print self.U, self.H
@@ -310,7 +315,7 @@ class Social_Status:
 
         self.calcTrust()
 
-            
+
     def calcTrust(self):
         #calculate all final trust values knowing U,H
 
@@ -325,17 +330,17 @@ class Social_Status:
 
         print "FINAL PREDICTED"
         print self.G_final
-        
+
         print "START OFF AS"
         print self.G
 
         return self.G_final
 
 
-    
+
     def TP_accuracy(self):
         # set ratio of data to split
-        
+
 
         q = 0.5
         # r,c = np.where(G > 0)
@@ -344,12 +349,12 @@ class Social_Status:
         # print "N: ", len(N)
 
         A = self.G_original
-    
+
         n_N = int(len(self.G_original) *0.5) #getting middle number
         print n_N
         N = self.G_original[n_N:] #getting N as np array
         N = [tuple(x) for x in N] #turning N to a list of tuples
-        
+
         print "N: ", len(N)
         # print N
 
@@ -363,7 +368,7 @@ class Social_Status:
         A = set([tuple(x) for x in A]) #turning A into a set
         all_pairs = [(a,b) for ((a,b),z) in np.ndenumerate(self.G)]
         all_pairs = set(all_pairs)
-        B = list(all_pairs-A) 
+        B = list(all_pairs-A)
         print "B PAIRS", len(B)
 
         print type(B), type(N)
@@ -372,43 +377,43 @@ class Social_Status:
         T1 = []
 
         print "Union: ", len(BUN)
-        
+
         for u, v in BUN:
             ptrust = self.G_final[u-1,v-1]
             T1.append((ptrust, u, v))
-           
+
         T1.sort()
         T1.reverse()
-       
+
         cnt1 = 0
-        
+
         for i in xrange(n_N):
             if (T1[i][1],T1[i][2]) in N:
                 cnt1 += 1
-           
+
         print "CNT: ", cnt1
         print n_N
         self.TP = float(cnt1) / len(N)
         print PA1
-       
+
         del BUN
         del N
         del B
         del T1
-        
+
         print "X = ", q, "Prediction Accuracy (Betweenness nx)= ", self.TP
         return self.TP
-      
 
 
 
-def data_function():  
-    data = data_handler("rating_with_timestamp.mat", "trust.mat", "epinion_trust_with_timestamp.mat")
+
+def init_main():
+    data = data_handler(_rating_path, _trust_path, _trust_with_timestamp_path)
     data = data.load_matrices()
     print "LOADED MATRICES"
     d = data[2]
     print "set d: " + str(d)
-    P = data[0] # 0 for testing, 1 for training 
+    P = data[0] # 0 for testing, 1 for training
     print "set p" +  str(len(P))
     G = data[1]
     print "set G" + str(len(G))
@@ -419,7 +424,9 @@ def data_function():
 
     return
 
-data_function()
+
+if __name__ == "__main__":
+    init_main()
 
 
 
@@ -432,5 +439,5 @@ data_function()
   # check mem things once again
 
 
-            
+
 
