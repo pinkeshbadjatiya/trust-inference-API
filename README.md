@@ -2,8 +2,6 @@
 An opensource API exposing multiple algorithms for infering trust in a network
 
 ## Instructions
-<hr>
-
 ### sTrust
 - **USAGE**: `python api.py sTrust`
 - **DATASETS**: It requires 3 files,
