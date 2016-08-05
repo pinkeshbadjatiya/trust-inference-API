@@ -15,6 +15,30 @@ An opensource API exposing multiple algorithms for infering trust in a network
 - **USAGE**: `python api.py hTrust`
 - **DATASETS** : It also requires the same dataset as used by `sTrust`
 
+### MATRI
+- **USAGE**: `python api.py matri`
+- **DATASETS** : It requires a **.dot** file in the directory "dataset" which contains the information about the network graph in the format:
+  ```
+  strict digraph  {
+          eivind -> wsanchez       [level=Master];
+          eivind -> nbm    [level=Journeyer];
+          eivind -> cg     [level=Journeyer];
+          eivind -> jmock  [level=Journeyer];
+          eivind -> unfurl         [level=Journeyer];
+          eivind -> quiet1         [level=Apprentice];
+          eivind -> cynick         [level=Apprentice];
+          eivind -> kkenn  [level=Journeyer];
+          ....
+  
+  ```
+- The type of matrix-factorization used can be changed. The accuracy of the resutl depends a lot on the accuracy of factorization. By default, there are 4 types of factorizations saved in the directory "factorization", namely,
+  - Alternating Factorization
+  - Gradient Descent
+  - state-of-the-art factorization provided by `pymf` library
+  - state-of-the-art factorization provided by `sklearn` library  
+- The `globs.py` contains the valious configurable parameters used in the code, like, Max no of factorization iterations, Path to save the computed matrices, Total no of bias factors, latent factors, and the regularization parameter for updation.
+
+
 ## References
 (Add all the links to the papers)  
 [1] `mTrust-datasets` : http://www.jiliang.xyz/trust.html  
