@@ -1,6 +1,7 @@
 from __future__ import print_function
 from hTrust import hTrust
 from sTrust import sTrust
+from MATRI import model as Matri
 import sys
 
 usage = """
@@ -25,6 +26,8 @@ if __name__ == "__main__":
         hTrust.init_main()
     elif algo == "strust":
         sTrust.init_main()
+    elif algo == "matri":
+        Matri.init_main()
     else:
         print("ERROR: invalid algorithm specified")
 	show_usage()
