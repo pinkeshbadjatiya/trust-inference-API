@@ -12,7 +12,8 @@ An opensource API exposing multiple algorithms for infering trust in a network
 
 
 ### hTrust
-
+- **USAGE**: `python api.py hTrust`
+- **DATASETS** : It also requires the same dataset as used by `sTrust`
 
 ## References
 (Add all the links to the papers)  
