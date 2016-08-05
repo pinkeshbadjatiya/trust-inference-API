@@ -17,4 +17,7 @@ An opensource API exposing multiple algorithms for infering trust in a network
 
 ## References
 (Add all the links to the papers)  
-[1] http://www.jiliang.xyz/trust.html
+[1] `mTrust-datasets` : http://www.jiliang.xyz/trust.html  
+[2] `MATRI-paper` : https://ptpb.pw/UIp1.pdf  
+[3] `MATRI-report` : https://ptpb.pw/0LX2.pdf  
+
