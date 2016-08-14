@@ -5,4 +5,5 @@ pip
 pymf
 scipy
 sklearn
-Theano
+theano
+lasagne
