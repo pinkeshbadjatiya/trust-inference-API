@@ -39,9 +39,17 @@ An opensource API exposing multiple algorithms for infering trust in a network
 - The `globs.py` contains the valious configurable parameters used in the code, like, Max no of factorization iterations, Path to save the computed matrices, Total no of bias factors, latent factors, and the regularization parameter for updation.
 
 
+### aeTrust
+#### Trust inference using Autoencoders
+- **USAGE**: `python api.py aeTrust`
+- **DATASETS** : data.mat: Advagato trust dataset
+- To train on a custom dataset, replace data.mat in the 'data' folder in 'aeTrust' with your own dataset formatted in MATLAB compatible format - '.mat'.
+
+
 ## References
 (Add all the links to the papers)  
 [1] `mTrust-datasets` : http://www.jiliang.xyz/trust.html  
 [2] `MATRI-paper` : https://ptpb.pw/UIp1.pdf  
 [3] `MATRI-report` : https://ptpb.pw/0LX2.pdf  
+[4] `AutoRec: Autoencoders Meet Collaborative Filtering`: http://dl.acm.org/citation.cfm?id=2742726 
 
