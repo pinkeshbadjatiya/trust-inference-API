@@ -1,8 +1,9 @@
 from __future__ import print_function
 from hTrust import hTrust
 from sTrust import sTrust
-from MATRI import model as Matri
-from aeTrust import aeTrust
+#from MATRI import model as Matri
+#from aeTrust import aeTrust
+from mTrust import model as mTrust
 import sys
 
 usage = """
@@ -31,6 +32,8 @@ if __name__ == "__main__":
         Matri.init_main()
     elif algo == 'aetrust':
         aeTrust.main()
+    elif algo == 'mtrust':
+        mTrust.main()
     else:
         print("ERROR: invalid algorithm specified")
 	show_usage()
