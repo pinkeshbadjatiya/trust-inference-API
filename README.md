@@ -1,5 +1,6 @@
 # trust-inference-API
-An opensource API exposing multiple algorithms for infering trust in a network
+Implementation of multiple algorithms for inferring trust in the user network (social graph) using various
+network properties such as trust propagation, multi-aspect property, social trust etc.  
 
 ## Instructions
 ### sTrust
